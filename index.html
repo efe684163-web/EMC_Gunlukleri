@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMC Günlükleri | Elektromanyetik Uyumluluk, Test & İzolasyon Rehberi</title>
+  <meta name="description" content="Elektronik mühendisleri ve donanım tasarımcıları için kapsamlı EMC, EMI, Test Standartları ve Galvanik İzolasyon başvuru kaynağı.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            },
+            pcb: {
+              dark: '#0a0f1d',
+              card: '#111827',
+              border: '#1f2937',
+              accent: '#10b981',
+              warning: '#f59e0b',
+              signal: '#38bdf8'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Grid arka plan efekti */
+    .bg-grid-pattern {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    }
+    .light .bg-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    }
+
+    /* Glow efektleri */
+    .glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.35);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Özel kaydırma çubuğu */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b1120;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2563eb;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body class="bg-[#0b1120] text-slate-200 font-sans antialiased selection:bg-brand-500 selection:text-white transition-colors duration-300">
+
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-[#0b1120]/85 border-b border-slate-800 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-sky-500 to-emerald-400 p-[2px] transition group-hover:scale-105">
+            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
+              <i class="fa-solid fa-wave-square text-sky-400 text-lg group-hover:animate-pulse"></i>
+            </div>
+          </div>
+          <div>
+            <span class="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+              EMC <span class="text-sky-400 font-mono">GÜNLÜKLERİ</span>
+            </span>
+            <span class="text-[10px] block uppercase tracking-widest text-slate-400 font-mono">Mühendislik & İzolasyon Portalı</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
+          <a href="#temel-kavramlar" class="hover:text-sky-400 transition">Temel Kavramlar</a>
+          <a href="#test-standartlari" class="hover:text-sky-400 transition">Test Standartları</a>
+          <a href="#izolasyon-ve-donanim" class="hover:text-sky-400 transition">İzolasyon & Tasarım</a>
+          <a href="#laboratuvar-ekipmanlari" class="hover:text-sky-400 transition">Test Odası & LISN</a>
+          <a href="#interaktif-araclar" class="text-sky-400 hover:text-sky-300 font-mono flex items-center gap-1.5 bg-sky-950/60 border border-sky-800/60 px-3 py-1.5 rounded-lg">
+            <i class="fa-solid fa-microchip"></i> Araçlar & Hesaplama
+          </a>
+        </nav>
+
+        <!-- Right Quick CTA & Mobile Menu Toggle -->
+        <div class="flex items-center gap-3">
+          <a href="#interaktif-araclar" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg bg-brand-600 hover:bg-brand-500 text-white shadow-lg shadow-brand-600/30 transition">
+            <i class="fa-solid fa-sliders"></i> Hızlı Teşhis
+          </a>
+          <button id="mobileMenuBtn" aria-label="Menü Aç" class="md:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobileMenu" class="hidden md:hidden border-b border-slate-800 bg-[#0b1120] px-4 pt-2 pb-4 space-y-2">
+      <a href="#temel-kavramlar" class="block py-2 text-sm text-slate-300 hover:text-sky-400">Temel Kavramlar (EMI/EMS)</a>
+      <a href="#test-standartlari" class="block py-2 text-sm text-slate-300 hover:text-sky-400">Test Standartları (ESD, Surge, EFT)</a>
+      <a href="#izolasyon-ve-donanim" class="block py-2 text-sm text-slate-300 hover:text-sky-400">İzolasyon ve PCB Tasarımı</a>
+      <a href="#laboratuvar-ekipmanlari" class="block py-2 text-sm text-slate-300 hover:text-sky-400">Yankısız Oda & Ekipmanlar</a>
+      <a href="#interaktif-araclar" class="block py-2 text-sm text-sky-400 font-mono">Hesaplayıcı ve Hata Teşhisi</a>
+    </div>
+  </header>
+
+  <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-grid-pattern">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0b1120]/70 to-[#0b1120] pointer-events-none"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Text Hero Content -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-950/40 text-sky-300 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            IEC & CISPR Standartlarına Uyum Kılavuzu
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+            Elektromanyetik Uyumluluk, <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-brand-400 to-emerald-400">Test & İzolasyon</span> Mühendisliği.
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
+            Yüksek hızlı dijital devreler, güç elektroniği ve endüstriyel tasarımlarda EMI gürültüsünü kaynağında bastırın. ESD, EFT, Surge testlerinden ilk seferde geçmek için modern galvanik izolasyon ve PCB yerleşim stratejileri.
+          </p>
+
+          <div class="flex flex-wrap gap-4 pt-2">
+            <a href="#izolasyon-ve-donanim" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-sky-500 hover:from-brand-500 hover:to-sky-400 text-white font-medium shadow-lg shadow-sky-500/25 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved"></i> İzolasyon & Bastırma Rehberi
+            </a>
+            <a href="#interaktif-araclar" class="px-6 py-3.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-medium transition flex items-center gap-2">
+              <i class="fa-solid fa-calculator font-mono text-emerald-400"></i> Filtre Hesaplayıcı
+            </a>
+          </div>
+
+          <!-- Quick badges -->
+          <div class="pt-4 grid grid-cols-3 gap-3 border-t border-slate-800/80 text-xs text-slate-400 font-mono">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-check text-emerald-400"></i> CISPR 32 / 25
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-check text-emerald-400"></i> IEC 61000-4-x
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-check text-emerald-400"></i> Galvanik Bariyer
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Interactive Signal/Noise Canvas Simulator -->
+        <div class="lg:col-span-5">
+          <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-xs font-mono text-slate-400">
+              <span class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                CANLI SPEKTRUM & DALGA SİMÜLASYONU
+              </span>
+              <span class="text-sky-400" id="filterStatusBadge">Filtresiz (Yüksek EMI)</span>
+            </div>
+
+            <!-- Oscilloscope / Spectrum Canvas -->
+            <div class="relative bg-[#050811] rounded-xl overflow-hidden border border-slate-800 p-1">
+              <canvas id="emiCanvas" class="w-full h-52 block rounded-lg"></canvas>
+              <div class="absolute bottom-2 left-3 text-[10px] font-mono text-emerald-400/80 bg-black/60 px-2 py-0.5 rounded">
+                CH1: 500mV/div &bull; 100MHz Nyquist
+              </div>
+            </div>
+
+            <!-- Interactive simulation controls -->
+            <div class="mt-4 space-y-3">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-300 font-medium">Common Mode Filtresi / Ferrit:</span>
+                <button id="toggleFilterBtn" class="px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-sky-600 hover:bg-sky-500 text-white transition">
+                  Filtreyi Devreye Al
+                </button>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span>Anahtarlama Gürültüsü (Harmonikler):</span>
+                <span class="font-mono text-amber-400" id="noiseLevelLabel">Yüksek (120 kHz PWM + Spikes)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="temel-kavramlar" class="py-16 md:py-24 border-t border-slate-800/80 bg-slate-900/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-sky-400 mb-2">Temel Prensipler</h2>
+        <h3 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">EMC Nedir? Gürültü Matrisi</h3>
+        <p class="mt-3 text-slate-400">
+          Elektromanyetik Uyumluluk (EMC); bir cihazın ortamına kabul edilemez elektromanyetik parazit yaymaması (Emisyon) ve ortamındaki parazitlerden etkilenmeden doğru çalışabilmesidir (Bağışıklık).
+        </p>
+      </div>
+
+      <!-- 4-Quadrant Grid Matrix -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Card 1: Conducted Emission -->
+        <div class="rounded-2xl p-6 bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 transition-all group">
+          <div class="flex items-start justify-between">
+            <div class="p-3 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xl">
+              <i class="fa-solid fa-plug-circle-bolt"></i>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-sky-300">150 kHz - 30 MHz</span>
+          </div>
+          <h4 class="text-xl font-bold text-white mt-4 group-hover:text-sky-300 transition">İletilen Emisyon (Conducted Emission)</h4>
+          <p class="text-sm text-slate-400 mt-2">
+            Cihazın güç, haberleşme veya I/O kabloları üzerinden şebekeye veya bağlı diğer cihazlara kablolu iletimle geri basılan yüksek frekanslı gürültülerdir.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-800 text-xs font-mono text-slate-400">
+            <strong>Kritik Önlemler:</strong> Pi filtre, Common-Mode Choke, X/Y sınıfı güvenlik kapasitörleri, LISN kontrollü tasarım.
+          </div>
+        </div>
+
+        <!-- Card 2: Radiated Emission -->
+        <div class="rounded-2xl p-6 bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all group">
+          <div class="flex items-start justify-between">
+            <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xl">
+              <i class="fa-solid fa-tower-broadcast"></i>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-emerald-300">30 MHz - 6 GHz+</span>
+          </div>
+          <h4 class="text-xl font-bold text-white mt-4 group-hover:text-emerald-300 transition">Işınan Emisyon (Radiated Emission)</h4>
+          <p class="text-sm text-slate-400 mt-2">
+            Hızlı yükselme zamanlı (fast slew rate) hatlar, saat sinyalleri veya anten gibi davranan uzun PCB yolları ve kablolar tarafından uzaya yayılan elektromanyetik dalgalardır.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-800 text-xs font-mono text-slate-400">
+            <strong>Kritik Önlemler:</strong> Düzgün toprak düzlemi (GND plane), minimum loop alanı, ekranlama (shielding), ferrit boğumlar.
+          </div>
+        </div>
+
+        <!-- Card 3: Conducted Immunity -->
+        <div class="rounded-2xl p-6 bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 transition-all group">
+          <div class="flex items-start justify-between">
+            <div class="p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xl">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-amber-300">Surge, EFT/Burst</span>
+          </div>
+          <h4 class="text-xl font-bold text-white mt-4 group-hover:text-amber-300 transition">İletilen Bağışıklık (Conducted Immunity)</h4>
+          <p class="text-sm text-slate-400 mt-2">
+            Şebekeden veya endüstriyel kablolardan cihaza gelebilecek ani yüksek voltaj darbelerine (Surge), endüktif yük anahtarlamalarına (EFT) karşı donanımın direnci.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-800 text-xs font-mono text-slate-400">
+            <strong>Kritik Önlemler:</strong> TVS Diyotlar, Varistörler (MOV), Gaz Deşarj Tüpleri (GDT), Galvanik İzolasyon bariyerleri.
+          </div>
+        </div>
+
+        <!-- Card 4: Radiated Immunity -->
+        <div class="rounded-2xl p-6 bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all group">
+          <div class="flex items-start justify-between">
+            <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xl">
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 text-purple-300">80 MHz - 6 GHz</span>
+          </div>
+          <h4 class="text-xl font-bold text-white mt-4 group-hover:text-purple-300 transition">Işınan Bağışıklık (Radiated Immunity & ESD)</h4>
+          <p class="text-sm text-slate-400 mt-2">
+            Telsizler, baz istasyonları veya operatörün parmağından gövdeye/konnektöre sıçrayan statik elektrik (ESD) altında cihazın kilitlenmeden çalışmaya devam edebilmesidir.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-800 text-xs font-mono text-slate-400">
+            <strong>Kritik Önlemler:</strong> Faraday kafesi prensibi, şasi topraklaması, yüksek hızlı hatlar için ultra düşük kapasitanslı TVS dizileri.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="test-standartlari" class="py-16 md:py-24 border-t border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-emerald-400">Uluslararası Uyumluluk</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1">EMC Test Standartları ve Seviyeleri</h2>
+        </div>
+        <p class="text-sm text-slate-400 max-w-md mt-2 md:mt-0 font-mono">
+          CE, FCC, E-Mark ve MIL-STD sertifikasyonlarının omurgasını oluşturan standart test profilleri.
+        </p>
+      </div>
+
+      <!-- Test Standard Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Test 1: ESD -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 relative flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center text-xs font-mono mb-4">
+              <span class="text-emerald-400 font-semibold">IEC 61000-4-2</span>
+              <span class="bg-emerald-950/80 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">ESD</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Elektrostatik Deşarj (ESD)</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              İnsan vücudu modeline (HBM - 150pF / 330Ω) göre temaslı ve temassız ark deşarjı simülasyonudur.
+            </p>
+            <div class="my-4 p-3 bg-slate-950/60 rounded-xl text-xs font-mono space-y-1.5 border border-slate-800/70">
+              <div class="text-slate-400">Temaslı Deşarj (Contact): <span class="text-white font-bold">&plusmn;4 kV, &plusmn;8 kV</span></div>
+              <div class="text-slate-400">Havadan Deşarj (Air): <span class="text-white font-bold">&plusmn;8 kV, &plusmn;15 kV</span></div>
+              <div class="text-slate-400">Yükselme Zamanı: <span class="text-amber-400 font-bold">~0.7 - 1.0 ns</span></div>
+            </div>
+          </div>
+          <div class="text-xs text-slate-400 border-t border-slate-800 pt-3">
+            <span class="text-sky-400 font-semibold">Tasarım Çözümü:</span> TVS diyotları doğrudan konnektör pimlerine en yakın noktaya yerleştirilmeli.
+          </div>
+        </div>
+
+        <!-- Test 2: EFT/Burst -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 relative flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center text-xs font-mono mb-4">
+              <span class="text-sky-400 font-semibold">IEC 61000-4-4</span>
+              <span class="bg-sky-950/80 text-sky-300 px-2 py-0.5 rounded border border-sky-800">EFT / BURST</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Elektriksel Hızlı Geçici Rejim</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Röle, kontaktör veya motor açılıp kapanmalarında oluşan yüksek frekanslı darbe trenlerini temsil eder.
+            </p>
+            <div class="my-4 p-3 bg-slate-950/60 rounded-xl text-xs font-mono space-y-1.5 border border-slate-800/70">
+              <div class="text-slate-400">Darbe Frekansı: <span class="text-white font-bold">5 kHz / 100 kHz</span></div>
+              <div class="text-slate-400">Gerilim Genliği: <span class="text-white font-bold">0.5 kV - 4 kV</span></div>
+              <div class="text-slate-400">Süre: <span class="text-amber-400 font-bold">5ns / 50ns darbe süresi</span></div>
+            </div>
+          </div>
+          <div class="text-xs text-slate-400 border-t border-slate-800 pt-3">
+            <span class="text-sky-400 font-semibold">Tasarım Çözümü:</span> Common mode boğucu (choke) ve hat filtreleme kondansatörleri.
+          </div>
+        </div>
+
+        <!-- Test 3: Surge -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 relative flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center text-xs font-mono mb-4">
+              <span class="text-amber-400 font-semibold">IEC 61000-4-5</span>
+              <span class="bg-amber-950/80 text-amber-300 px-2 py-0.5 rounded border border-amber-800">SURGE</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Yıldırım & Darbe Gerilimi</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Yıldırım çarpmaları veya ağır endüstriyel anahtarlamaların sebep olduğu yüksek enerjili tekil darbelerdir.
+            </p>
+            <div class="my-4 p-3 bg-slate-950/60 rounded-xl text-xs font-mono space-y-1.5 border border-slate-800/70">
+              <div class="text-slate-400">Dalga Formu: <span class="text-white font-bold">1.2 / 50 &mu;s (Gerilim)</span></div>
+              <div class="text-slate-400">Akım Dalgası: <span class="text-white font-bold">8 / 20 &mu;s (Akım)</span></div>
+              <div class="text-slate-400">Test Seviyesi: <span class="text-amber-400 font-bold">1 kV ila 6 kV+</span></div>
+            </div>
+          </div>
+          <div class="text-xs text-slate-400 border-t border-slate-800 pt-3">
+            <span class="text-sky-400 font-semibold">Tasarım Çözümü:</span> GDT (Gaz tüpü) + MOV (Varistör) + TVS koordinasyonlu koruma.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="izolasyon-ve-donanim" class="py-16 md:py-24 border-t border-slate-800/80 bg-slate-900/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-mono uppercase tracking-widest text-brand-400">Donanım Seviyesi Koruma</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1">Galvanik İzolasyon & PCB Tasarım Kuralları</h2>
+        <p class="mt-3 text-slate-300 text-sm sm:text-base">
+          Gürültü akımlarının hassas mikrodenetleyici ve analog kısımlara sızmasını önlemek için izolasyon bariyerleri ve empedans kontrolü hayati önem taşır.
+        </p>
+      </div>
+
+      <!-- Isolation Barrier Diagram (SVG Based) -->
+      <div class="mb-14 p-6 sm:p-8 bg-[#090e1a] rounded-3xl border border-slate-800 shadow-xl overflow-x-auto">
+        <h3 class="text-base font-semibold text-sky-400 font-mono flex items-center gap-2 mb-6">
+          <i class="fa-solid fa-diagram-project"></i> Donanım İzolasyon Bariyeri ve Çok Kademeli EMI Filtresi Mimarisi
+        </h3>
+
+        <div class="min-w-[700px] flex items-center justify-between gap-4 py-4 relative">
+          <!-- Kirli Bölge (Field / Dirty Ground) -->
+          <div class="w-1/3 p-5 rounded-2xl bg-red-950/20 border border-red-800/40 relative">
+            <span class="absolute -top-3 left-4 px-2 py-0.5 bg-red-900 text-red-200 text-[11px] font-mono rounded font-semibold uppercase">
+              Kirli Alan (Field Domain)
+            </span>
+            <div class="space-y-3 pt-2 text-xs">
+              <div class="flex items-center gap-2 text-red-300 font-medium">
+                <i class="fa-solid fa-triangle-exclamation"></i> Dış Dünya Bağlantıları (RS-485, CAN, 24V Güç)
+              </div>
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 font-mono text-slate-300">
+                1. Kademe: GDT & TVS Diyotlar
+              </div>
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 font-mono text-slate-300">
+                2. Kademe: Common Mode Choke (Boğucu Bobin)
+              </div>
+              <div class="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                <i class="fa-solid fa-arrow-down"></i> Topraklama: Şasi (PE) veya Saha GND
+              </div>
+            </div>
+          </div>
+
+          <!-- İzolasyon Bariyeri (Creepage / Clearance) -->
+          <div class="w-1/4 flex flex-col items-center justify-center px-2 py-6 border-2 border-dashed border-sky-500/40 rounded-2xl bg-sky-950/20 text-center relative">
+            <span class="text-xs font-mono font-bold text-sky-300 uppercase tracking-wider mb-2">
+              İzolasyon Bariyeri
+            </span>
+            <div class="text-2xl text-sky-400 my-2">
+              <i class="fa-solid fa-arrows-split-up-and-left"></i>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-tight">
+              Optokuplör / Dijital Kapasitif İzolatör / DC-DC İzolasyon Trafosu
+            </p>
+            <div class="mt-3 px-2 py-1 bg-sky-900/50 rounded text-[10px] font-mono text-sky-200 border border-sky-700/50">
+              Creepage &gt; 6.3 mm (2.5 kVrms)
+            </div>
+          </div>
+
+          <!-- Temiz Bölge (Clean MCU Ground) -->
+          <div class="w-1/3 p-5 rounded-2xl bg-emerald-950/20 border border-emerald-800/40 relative">
+            <span class="absolute -top-3 left-4 px-2 py-0.5 bg-emerald-900 text-emerald-200 text-[11px] font-mono rounded font-semibold uppercase">
+              Temiz Alan (Clean Domain)
+            </span>
+            <div class="space-y-3 pt-2 text-xs">
+              <div class="flex items-center gap-2 text-emerald-300 font-medium">
+                <i class="fa-solid fa-microchip"></i> Mikrodenetleyici (MCU / FPGA / ADC)
+              </div>
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 font-mono text-slate-300">
+                Bypass & Decoupling (100nF + 10&mu;F)
+              </div>
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 font-mono text-slate-300">
+                LDO Regülatör & Temiz Sayısal GND
+              </div>
+              <div class="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+                <i class="fa-solid fa-shield-check"></i> Sıfır Döngü (Loop-Free Ground Plane)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donanım Bileşenleri Kartları -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Komponent 1 -->
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold text-lg mb-3">
+            TVS
+          </div>
+          <h4 class="text-base font-bold text-white">TVS Diyotlar</h4>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Geçici yüksek gerilim darbelerini pikosaniyeler mertebesinde şöntleyerek güvenli sınıra kelepçeler. Hat kapasitansına (Cj &lt; 1pF) dikkat edilmelidir.
+          </p>
+        </div>
+
+        <!-- Komponent 2 -->
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg mb-3">
+            CMC
+          </div>
+          <h4 class="text-base font-bold text-white">Common Mode Choke</h4>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Diferansiyel sinyalleri engellemeden geçirirken, her iki hatta aynı yönde akan gürültü akımlarına karşı yüksek empedans sunarak bastırır.
+          </p>
+        </div>
+
+        <!-- Komponent 3 -->
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg mb-3">
+            FB
+          </div>
+          <h4 class="text-base font-bold text-white">Ferrite Bead</h4>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Yüksek frekanstaki gürültü enerjisini reaktif olarak depolamak yerine ısıya dönüştürerek yutan kayıplı (lossy) endüktif filtre elemanıdır.
+          </p>
+        </div>
+
+        <!-- Komponent 4 -->
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-lg mb-3">
+            GDT
+          </div>
+          <h4 class="text-base font-bold text-white">Gaz Boşalma Tüpleri</h4>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Kiloamper seviyesindeki yıldırım darbe akımlarını (Surge) toprağa deşarj etmek için birincil koruma kademesinde kullanılır.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="laboratuvar-ekipmanlari" class="py-16 md:py-24 border-t border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-sky-400">Test Altyapısı</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1">EMC Laboratuvar Ekipmanları</h2>
+        </div>
+        <p class="text-sm text-slate-400 max-w-md mt-2 md:mt-0">
+          Ön uyumluluk (Pre-compliance) ve akredite sertifikasyon testlerinde kullanılan kritik ölçüm ortamları.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Chamber Feature -->
+        <div class="group rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-sky-500/40 transition">
+          <div class="h-48 overflow-hidden relative">
+            <img 
+              src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" 
+              alt="Yankısız Test Odası (Anechoic Chamber)" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="this.src='https://placehold.co/800x450/0f172a/38bdf8?text=Anechoic+Chamber'"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            <span class="absolute bottom-3 left-4 text-xs font-mono font-semibold bg-sky-950/80 border border-sky-800 text-sky-300 px-2 py-0.5 rounded">
+              SAC / FAR Odası
+            </span>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2">Yankısız Oda (Anechoic Chamber)</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Piramit köpük soğurucular ve ferrit karolarla kaplı, dış elektromanyetik parazitlerden tamamen izole edilmiş 3m veya 10m ölçüm odalarıdır.
+            </p>
+          </div>
+        </div>
+
+        <!-- LISN Feature -->
+        <div class="group rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-emerald-500/40 transition">
+          <div class="h-48 overflow-hidden relative">
+            <img 
+              src="https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80" 
+              alt="LISN ve Güç Filtreleme Ölçüm Masası" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="this.src='https://placehold.co/800x450/0f172a/10b981?text=LISN+Measurement'"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            <span class="absolute bottom-3 left-4 text-xs font-mono font-semibold bg-emerald-950/80 border border-emerald-800 text-emerald-300 px-2 py-0.5 rounded">
+              LISN (AMN)
+            </span>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2">LISN (Line Impedance Stabilization)</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Şebeke hattında standart 50&Omega; empedans sağlayarak cihazın şebekeye bastığı gürültüyü spektrum analizöre güvenle aktaran filtredir.
+            </p>
+          </div>
+        </div>
+
+        <!-- Spectrum Analyzer & Probes -->
+        <div class="group rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/40 transition">
+          <div class="h-48 overflow-hidden relative">
+            <img 
+              src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=800&q=80" 
+              alt="Spektrum Analizör ve Yakın Alan Probları" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="this.src='https://placehold.co/800x450/0f172a/f59e0b?text=Spectrum+Analyzer'"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            <span class="absolute bottom-3 left-4 text-xs font-mono font-semibold bg-amber-950/80 border border-amber-800 text-amber-300 px-2 py-0.5 rounded">
+              Near-Field Probing
+            </span>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2">Spektrum Analizör & H-Alanı Probları</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              PCB üzerindeki manyetik kaçakları ve sıcak EMI noktalarını tespit etmek için kullanılan H-alanı ve E-alanı yakın alan problarıdır.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="interaktif-araclar" class="py-16 md:py-24 border-t border-slate-800/80 bg-slate-900/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400">Pratik Mühendislik Araçları</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1">EMC Simülatörü ve Hesaplayıcılar</h2>
+        <p class="mt-2 text-slate-400 text-sm">
+          Tasarım aşamasında filtre kesim frekanslarını belirleyin veya karşılaştığınız test başarısızlığına anında çözüm bulun.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Tool 1: Troubleshooting Wizard (Sol Bölüm - 6 kolon) -->
+        <div class="lg:col-span-6 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center">
+              <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">EMC Hata Teşhis Sihirbazı</h3>
+              <p class="text-xs text-slate-400">Test sırasında karşılaşılan sorunu seçin</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-mono text-slate-300 mb-2">Test Başarısızlığı Tipi:</label>
+              <select id="issueSelector" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-sky-500 transition font-sans">
+                <option value="re_high_freq">Radiated Emission: Yüksek Saat Frekansı Harmonikleri (&gt;100 MHz)</option>
+                <option value="ce_low_freq">Conducted Emission: SMPS Anahtarlama Temel Frekansı (150 kHz - 2 MHz)</option>
+                <option value="esd_mcu_reset">ESD: Deşarj Sırasında Mikrodenetleyici Kilitlenmesi / Yeniden Başlama</option>
+                <option value="surge_breakdown">Surge: Güç Giriş Katında Komponent Yanması / Delinmesi</option>
+                <option value="can_burst_comm_drop">EFT/Burst: CAN / RS-485 Haberleşme Hattında Paket Kaybı</option>
+              </select>
+            </div>
+
+            <!-- Sonuç Kutusu -->
+            <div id="diagnosticResult" class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+              <!-- JS ile dinamik dolar -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool 2: Filter Cutoff / Decoupling Resonance Calculator (Sağ Bölüm - 6 kolon) -->
+        <div class="lg:col-span-6 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">LC / RC Filtre Kesim Frekansı Hesaplayıcı</h3>
+              <p class="text-xs text-slate-400">Common Mode / Diferansiyel Filtre Değerleri</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Giriş Alanları -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-mono text-slate-300 mb-1">Endüktans (L):</label>
+                <div class="flex">
+                  <input type="number" id="calcInductance" value="10" step="0.1" class="w-full bg-slate-950 border border-slate-700 rounded-l-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 font-mono">
+                  <select id="calcInductanceUnit" class="bg-slate-800 border border-l-0 border-slate-700 rounded-r-xl px-2 text-xs text-slate-300">
+                    <option value="1e-6">&mu;H</option>
+                    <option value="1e-3" selected>mH</option>
+                    <option value="1">H</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-300 mb-1">Kapasitans (C):</label>
+                <div class="flex">
+                  <input type="number" id="calcCapacitance" value="100" step="1" class="w-full bg-slate-950 border border-slate-700 rounded-l-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 font-mono">
+                  <select id="calcCapacitanceUnit" class="bg-slate-800 border border-l-0 border-slate-700 rounded-r-xl px-2 text-xs text-slate-300">
+                    <option value="1e-12">pF</option>
+                    <option value="1e-9" selected>nF</option>
+                    <option value="1e-6">&mu;F</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hesapla Butonu -->
+            <button id="calculateBtn" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs font-mono uppercase tracking-wider transition">
+              Hesapla: f_c = 1 / (2&pi;&radic;LC)
+            </button>
+
+            <!-- Sonuç Göstergesi -->
+            <div class="p-4 rounded-xl bg-slate-950 border border-emerald-900/50 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-slate-400 block font-mono">Rezonans / Kesim Frekansı (-3dB):</span>
+                <span id="calcResultFreq" class="text-2xl font-bold font-mono text-emerald-400">15.92 kHz</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-slate-500 block font-mono">Açısal Frekans (&omega;):</span>
+                <span id="calcResultOmega" class="text-xs font-mono text-slate-300">100.0 krad/s</span>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-400 bg-slate-900 p-3 rounded-lg border border-slate-800">
+              <strong class="text-slate-200">İpucu:</strong> SMPS gürültü bastırımında filtre kesim frekansınız en az anahtarlama frekansının 1/10'unda seçilmelidir.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 border-t border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-mono uppercase tracking-widest text-sky-400">Saha Deneyimleri</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1">EMC Tasarımının 5 Altın Kuralı</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+          <div class="text-sky-400 font-mono text-2xl font-bold mb-2">01</div>
+          <h4 class="text-base font-bold text-white mb-2">Dönüş Akımı Yolu (Current Return Path)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Yüksek frekanslı akımlar en düşük direnç değil, en düşük endüktans yolunu seçer. Sinyal yolunun hemen altında kesintisiz bir GND düzlemi bulunmalıdır.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+          <div class="text-emerald-400 font-mono text-2xl font-bold mb-2">02</div>
+          <h4 class="text-base font-bold text-white mb-2">Loop Alanını Sıfıra Yaklaştırın</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Manyetik alan ışıması akım x döngü alanına (I &times; A) bağlıdır. Besleme ve şasi hatlarını paralel ve mümkün olan en dar alanda tutun.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+          <div class="text-amber-400 font-mono text-2xl font-bold mb-2">03</div>
+          <h4 class="text-base font-bold text-white mb-2">Bypass Kapasitör Yerleşimi</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Decoupling kapasitörlerini entegre pini ile besleme arasına değil; önce kapasitör pedine, ardından entegre pinine girecek şekilde yerleştirin.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+          <div class="text-purple-400 font-mono text-2xl font-bold mb-2">04</div>
+          <h4 class="text-base font-bold text-white mb-2">Konnektör Kenar Koruması</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Tüm ESD koruma elemanları kartın ortasında değil, harici kablonun karta girdiği fiziksel konnektörün tam dibinde konumlandırılmalıdır.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
+          <div class="text-sky-400 font-mono text-2xl font-bold mb-2">05</div>
+          <h4 class="text-base font-bold text-white mb-2">Yıldız Topraklama (Star Grounding)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Gürültülü motor/röle şasisi ile hassas sensör veya analog dönüştürücü referanslarını tek bir ortak noktada (tercihen güç girişinde) buluşturun.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-brand-900/40 to-slate-900 border border-brand-500/30 flex flex-col justify-between">
+          <div>
+            <div class="text-brand-400 font-mono text-2xl font-bold mb-2">06</div>
+            <h4 class="text-base font-bold text-white mb-2">Simülasyon & Pre-Compliance</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Resmi teste girmeden önce uygun maliyetli bir yakın alan probu ve spektrum analizör ile ofis ortamında sıcak noktaları temizleyin.
+            </p>
+          </div>
+          <div class="mt-4 pt-4 border-t border-brand-500/20 text-xs font-mono text-sky-400">
+            %80 daha az yeniden spin maliyeti
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-slate-800 bg-[#070b14] py-12 text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+          <i class="fa-solid fa-wave-square"></i>
+        </div>
+        <div>
+          <span class="font-bold text-white text-sm">EMC Günlükleri</span> &copy; 2026. Donanım & İzolasyon Mühendisliği.
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6 font-mono">
+        <a href="#temel-kavramlar" class="hover:text-white transition">Kavramlar</a>
+        <a href="#test-standartlari" class="hover:text-white transition">Standartlar</a>
+        <a href="#izolasyon-ve-donanim" class="hover:text-white transition">İzolasyon</a>
+        <a href="#interaktif-araclar" class="hover:text-white transition">Hesaplayıcı</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ----------------------------------------------------
+    // 1. Mobil Menü Aç/Kapa
+    // ----------------------------------------------------
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // ----------------------------------------------------
+    // 2. Canlı Dalga Formu / EMI Simülasyonu (HTML5 Canvas)
+    // ----------------------------------------------------
+    const canvas = document.getElementById('emiCanvas');
+    const ctx = canvas.getContext('2d');
+    let isFilterActive = false;
+    let animFrameId;
+    let phase = 0;
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight || 208;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawWave() {
+      if (!canvas) return;
+      const width = canvas.width;
+      const height = canvas.height;
+      const centerY = height / 2;
+
+      ctx.fillStyle = '#050811';
+      ctx.fillRect(0, 0, width, height);
+
+      // Izgara Çizgileri
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x < width; x += 40) {
+        ctx.moveTo(x, 0); ctx.lineTo(x, height);
+      }
+      for (let y = 0; y < height; y += 30) {
+        ctx.moveTo(0, y); ctx.lineTo(width, y);
+      }
+      ctx.stroke();
+
+      // Sinyal + Gürültü Çizimi
+      ctx.beginPath();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = isFilterActive ? '#10b981' : '#38bdf8'; // Filtreli ise yeşil, gürültülü ise mavi/cyan
+
+      for (let x = 0; x < width; x++) {
+        // Ana Sinyal (Temel frekans)
+        const fundamental = Math.sin((x * 0.03) + phase) * 35;
+        
+        // EMI / Harmonik Gürültü
+        let noise = 0;
+        if (!isFilterActive) {
+          // Yüksek frekanslı harmonikler ve iğneler (spikes)
+          noise = (Math.sin((x * 0.35) + phase * 3) * 16) +
+                  (Math.sin((x * 0.9) - phase * 5) * 8) +
+                  ((Math.random() - 0.5) * 12);
+        } else {
+          // Filtrelenmiş temiz sinyal (hafif kalıntı gürültü)
+          noise = (Math.sin((x * 0.35) + phase * 3) * 1.5) + ((Math.random() - 0.5) * 1.2);
+        }
+
+        const y = centerY + fundamental + noise;
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+
+      phase += isFilterActive ? 0.04 : 0.08;
+      animFrameId = requestAnimationFrame(drawWave);
+    }
+    drawWave();
+
+    // Filtre Açma / Kapatma Butonu
+    const toggleFilterBtn = document.getElementById('toggleFilterBtn');
+    const filterStatusBadge = document.getElementById('filterStatusBadge');
+    const noiseLevelLabel = document.getElementById('noiseLevelLabel');
+
+    toggleFilterBtn.addEventListener('click', () => {
+      isFilterActive = !isFilterActive;
+      if (isFilterActive) {
+        toggleFilterBtn.textContent = 'Filtreyi Devreden Çıkar';
+        toggleFilterBtn.classList.replace('bg-sky-600', 'bg-emerald-600');
+        toggleFilterBtn.classList.replace('hover:bg-sky-500', 'hover:bg-emerald-500');
+        filterStatusBadge.textContent = 'Filtreli (CMC + Bypass Devrede)';
+        filterStatusBadge.className = 'text-emerald-400 font-mono';
+        noiseLevelLabel.textContent = 'Düşük (-42 dB Bastırma)';
+        noiseLevelLabel.className = 'font-mono text-emerald-400';
+      } else {
+        toggleFilterBtn.textContent = 'Filtreyi Devreye Al';
+        toggleFilterBtn.classList.replace('bg-emerald-600', 'bg-sky-600');
+        toggleFilterBtn.classList.replace('hover:bg-emerald-500', 'hover:bg-sky-500');
+        filterStatusBadge.textContent = 'Filtresiz (Yüksek EMI)';
+        filterStatusBadge.className = 'text-sky-400 font-mono';
+        noiseLevelLabel.textContent = 'Yüksek (120 kHz PWM + Spikes)';
+        noiseLevelLabel.className = 'font-mono text-amber-400';
+      }
+    });
+
+    // ----------------------------------------------------
+    // 3. Arıza Teşhis Sihirbazı Veritabanı ve Mantığı
+    // ----------------------------------------------------
+    const issueDatabase = {
+      re_high_freq: {
+        title: "Işınan Emisyon (Radiated Emission) Yüksek Frekans Tepe Noktaları",
+        cause: "Hızlı yükselme zamanlı saat hatları (SPI, CLK, PWM), yetersiz decoupling veya ekranlanmamış kablolar anten görevi görüyor.",
+        actions: [
+          "Saat sinyal yollarına seri söndürme direnci (22Ω - 47Ω) ekleyerek slew rate'i yumuşatın.",
+          "Saat hattını iki GND plane arasında 'stripline' olarak yönlendirin (via dikişleme / via shielding yapın).",
+          "Dışarı giden I/O kablolarının çıkışına Ferrite Bead ve küçük değerlikli bypass kapasitörü yerleştirin."
+        ],
+        standard: "CISPR 32 Sınıf B / CISPR 25"
+      },
+      ce_low_freq: {
+        title: "İletilen Emisyon (Conducted Emission) 150kHz - 2MHz Aşımı",
+        cause: "Anahtarlamalı güç kaynağının (Flyback/Buck) anahtarlama frekansı ve ilk harmoniklerinin diferansiyel modu domine etmesi.",
+        actions: [
+          "Şebeke girişine diferansiyel mod filtre kapasitörü (X-Kapasitör) ve seri indüktör ekleyin.",
+          "MOSFET drain ucundaki snubber devresini (R-C veya R-C-D) optimize ederek parazitik çalınmayı (ringing) sönümleyin.",
+          "Anahtarlama frekansında 'Spread Spectrum Clocking' (SSCG) frekans titretme özelliğini aktif edin."
+        ],
+        standard: "EN 55032 / IEC 61000-6-3"
+      },
+      esd_mcu_reset: {
+        title: "ESD Deşarjı Anında MCU Kilitlenmesi / Watchdog Reset",
+        cause: "Deşarj akımının şasi yerine lojik topraktan geçerek reset hattına veya kristal osilatör devresine indüklenmesi.",
+        actions: [
+          "Reset pinine 100nF kondansatör ve 10k pull-up direncini MCU'ya en yakın konuma getirin.",
+          "Konnektör gövdesini şasiye (chassis) doğrudan, sinyal GND'sine ise paralel RC veya spark gap ile bağlayın.",
+          "Kristal osilatörün altındaki katmandan başka hiçbir sinyal geçirmeyin, etrafını GND halkasıyla koruyun."
+        ],
+        standard: "IEC 61000-4-2 Seviye 4"
+      },
+      surge_breakdown: {
+        title: "Surge Darbesinde Güç Katı Yarıiletkenlerinin Bozulması",
+        cause: "Yüksek enerjili darbenin kelepçeleme voltajının (clamping voltage) transistör sınırını aşması.",
+        actions: [
+          "Giriş hattına MOV (Varistör) + TVS kombinasyonlu iki kademeli hibrit koruma koyun.",
+          "İki koruyucu arasına akım sınırlayıcı seri direnç veya darbe şok bobini ekleyerek TVS'in erken yanmasını önleyin.",
+          "Toprak yolunun empedansını minimuma indirmek için geniş bakır döküm kullanın."
+        ],
+        standard: "IEC 61000-4-5 Seviye 3/4"
+      },
+      can_burst_comm_drop: {
+        title: "EFT / Hızlı Darbelerde CAN/RS-485 İletişim Kopması",
+        cause: "Haberleşme kablosuna kapasitif bağlanan yüksek hızlı common-mode darbelerinin transceiver eşiğini bozması.",
+        actions: [
+          "CAN/RS-485 hatlarına otomotiv kalitesinde Common Mode Choke (örn. 51µH - 100µH) ekleyin.",
+          "Haberleşme transceiver'ını dijital izolatör ve izole DC-DC dönüştürücü ile mikrodenetleyiciden galvanik olarak yalıtın.",
+          "EFT darbelerini bastırmak için çift yönlü düşük kapasitanslı TVS diyot kullanın."
+        ],
+        standard: "IEC 61000-4-4 Seviye 3"
+      }
+    };
+
+    const issueSelector = document.getElementById('issueSelector');
+    const diagnosticResult = document.getElementById('diagnosticResult');
+
+    function updateDiagnosis() {
+      const selected = issueDatabase[issueSelector.value];
+      if (!selected) return;
+
+      diagnosticResult.innerHTML = `
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+          <span class="text-xs font-mono font-bold text-sky-400">${selected.standard}</span>
+          <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">Önerilen Protokol</span>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-white mb-1">${selected.title}</h4>
+          <p class="text-xs text-slate-300 leading-relaxed">${selected.cause}</p>
+        </div>
+        <div class="pt-2">
+          <span class="text-xs font-semibold text-slate-200 block mb-2 font-mono">Uygulanacak Mühendislik Adımları:</span>
+          <ul class="text-xs text-slate-400 space-y-1.5 list-disc pl-4">
+            ${selected.actions.map(act => `<li>${act}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    issueSelector.addEventListener('change', updateDiagnosis);
+    updateDiagnosis(); // İlk yükleme
+
+    // ----------------------------------------------------
+    // 4. LC Kesim Frekansı Hesaplayıcısı
+    // ----------------------------------------------------
+    const calcInductance = document.getElementById('calcInductance');
+    const calcInductanceUnit = document.getElementById('calcInductanceUnit');
+    const calcCapacitance = document.getElementById('calcCapacitance');
+    const calcCapacitanceUnit = document.getElementById('calcCapacitanceUnit');
+    const calculateBtn = document.getElementById('calculateBtn');
+    const calcResultFreq = document.getElementById('calcResultFreq');
+    const calcResultOmega = document.getElementById('calcResultOmega');
+
+    function calculateFilter() {
+      const L_val = parseFloat(calcInductance.value) || 0;
+      const L_multiplier = parseFloat(calcInductanceUnit.value);
+      const L = L_val * L_multiplier; // Henry cinsinden
+
+      const C_val = parseFloat(calcCapacitance.value) || 0;
+      const C_multiplier = parseFloat(calcCapacitanceUnit.value);
+      const C = C_val * C_multiplier; // Farad cinsinden
+
+      if (L <= 0 || C <= 0) {
+        calcResultFreq.textContent = "Geçersiz Değer";
+        calcResultOmega.textContent = "-";
+        return;
+      }
+
+      // f = 1 / (2 * pi * sqrt(L * C))
+      const fc = 1 / (2 * Math.PI * Math.sqrt(L * C));
+      const omega = 2 * Math.PI * fc;
+
+      // Frekans Birimlendirmesi
+      let freqFormatted = "";
+      if (fc >= 1e6) {
+        freqFormatted = (fc / 1e6).toFixed(2) + " MHz";
+      } else if (fc >= 1e3) {
+        freqFormatted = (fc / 1e3).toFixed(2) + " kHz";
+      } else {
+        freqFormatted = fc.toFixed(2) + " Hz";
+      }
+
+      calcResultFreq.textContent = freqFormatted;
+      calcResultOmega.textContent = (omega >= 1e6 ? (omega / 1e6).toFixed(2) + " Mrad/s" : (omega / 1e3).toFixed(1) + " krad/s");
+    }
+
+    calculateBtn.addEventListener('click', calculateFilter);
+    calcInductance.addEventListener('input', calculateFilter);
+    calcCapacitance.addEventListener('input', calculateFilter);
+    calcInductanceUnit.addEventListener('change', calculateFilter);
+    calcCapacitanceUnit.addEventListener('change', calculateFilter);
+    calculateFilter(); // İlk hesaplama
+  </script>
+</body>
+</html>
